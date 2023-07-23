@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
 using Exiled.API.Interfaces;
-using Exiled.API.Enums;
-using PlayerRoles;
-using YamlDotNet.Serialization;
-using Respawning;
 using System.ComponentModel;
 
 namespace DoctorBuffed
