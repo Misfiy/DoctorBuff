@@ -11,42 +11,37 @@ namespace DoctorBuffed.Events
 {
     public sealed class Handler
     {
+        Config config = Plugin.Instance.Config;
         public ushort CuredZombieCount;
         public void OnFinishingRecall(FinishingRecallEventArgs ev)
         {
             CuredZombieCount++;
-            switch (CuredZombieCount)
+            if(CuredZombieCount == config.ZombieRegenCures)
             {
-                case 4:
-                    AnnounceLevelup(ev.Player, "You leveled up! Zombies now regenerate near you!", "You now regenerate near 049!");
-                    Timing.RunCoroutine(HealBuff(ev.Player));
-                    break;
-                case 6:
-                    AnnounceLevelup(ev.Player, "You leveled up! You now gain AHP when zombies are near you!", "049 now gains AHP when near you!");
-                    break;
-                case 8:
-                    AnnounceLevelup(ev.Player, "You leveled up! You and your zombies have gained speed!", "You have gained speed!");
-                    break;
-                default:
-                    ev.Player.ShowHint($"You have cured {CuredZombieCount} zombie(s)!");
-                    break;
+                AnnounceLevelup(ev.Player, "You leveled up! Zombies now regenerate near you!", "You now regenerate near 049!");
+                Timing.RunCoroutine(ZombieRegen(ev.Player));
+            }
+            if(CuredZombieCount == config.DoctorRegenCures)
+            {
+                AnnounceLevelup(ev.Player, "You leveled up! You now gain AHP when zombies are near you!", "049 now gains AHP when near you!");
+                Timing.RunCoroutine(DoctorAHPGain(ev.Player));
             }
             Timing.CallDelayed(0.5f, () =>
             {
-                if (CuredZombieCount >= 8)
+                if (CuredZombieCount >= config.SpeedBoostCures)
                 {
                     foreach (Player player in Player.List.Where(x => x.IsScp))
                     {
                         if (player.Role.Type == RoleTypeId.Scp0492)
                         {
                             player.EnableEffect(EffectType.MovementBoost);
-                            player.ChangeEffectIntensity(EffectType.MovementBoost, 7);
+                            player.ChangeEffectIntensity(EffectType.MovementBoost, config.SpeedBoostZombie);
                             continue;
                         }
                         if (player.Role.Type == RoleTypeId.Scp049)
                         {
                             player.EnableEffect(EffectType.MovementBoost);
-                            player.ChangeEffectIntensity(EffectType.MovementBoost, 11);
+                            player.ChangeEffectIntensity(EffectType.MovementBoost, config.SpeedBoostDoctor);
                         }
                     }
                 }
@@ -64,7 +59,7 @@ namespace DoctorBuffed.Events
                 ply.ShowHint(zombieMessage, 6);
             }
         }
-        public IEnumerator<float> HealBuff(Player p)
+        public IEnumerator<float> ZombieRegen(Player p)
         {
             while (p.Role.Type == RoleTypeId.Scp049)
             {
@@ -73,11 +68,18 @@ namespace DoctorBuffed.Events
                     if (ply.Role.Type == RoleTypeId.Scp0492 && Vector3.Distance(p.Position, ply.Position) <= 4)
                     {
                         ply.Heal(CuredZombieCount - 1);
-                        if (CuredZombieCount >= 6 && p.ArtificialHealth < (10 * CuredZombieCount) - 2f)
-                        {
-                            p.ArtificialHealth += 2f;
-                        }
                     }
+                }
+                yield return Timing.WaitForSeconds(1f);
+            }
+        }
+        public IEnumerator<float> DoctorAHPGain(Player p)
+        {
+            while (p.Role.Type == RoleTypeId.Scp049)
+            {
+                foreach(Player ply in Player.List.Where(p => p.Role.Type == RoleTypeId.Scp0492))
+                {
+                    if(Vector3.Distance(p.Position, ply.Position) <= 4 && p.ArtificialHealth < (10 * CuredZombieCount) - 2f) p.ArtificialHealth += 2f;
                 }
                 yield return Timing.WaitForSeconds(1f);
             }
