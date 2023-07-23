@@ -5,3 +5,7 @@
 
 # Planned
 - Config
+
+# Support
+* For any issues create an issue or contact me on [Discord](https://discord.gg/RYzahv3vfC).
+* Also use the Discord for suggestions :)
