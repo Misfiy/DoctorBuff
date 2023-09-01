@@ -26,7 +26,7 @@
           public override void OnDisabled()
           {
                UnregisterEvents();
-               Instance = null;
+               Instance = null!;
                base.OnDisabled();
           }
           public void RegisterEvents()
@@ -40,7 +40,7 @@
           {
                Exiled.Events.Handlers.Scp049.FinishingRecall -= handler.OnFinishingRecall;
                Exiled.Events.Handlers.Server.WaitingForPlayers -= handler.OnWaitingForPlayers;
-               handler = null;
+               handler = null!;
                Timing.KillCoroutines();
           }
      }
