@@ -7,8 +7,8 @@
 
      public class Plugin : Plugin<Config>
      {
-          public override string Name => "049Buff";
-          public override string Prefix => "DocBuff";
+          public override string Name => "Scp049Buff";
+          public override string Prefix => "DoctorBuff";
           public override string Author => "@misfiy";
           public override PluginPriority Priority => PluginPriority.Default;
           private Handler handler;
@@ -45,5 +45,3 @@
           }
      }
 }
-
-// player.TryAddCandy(InventorySystem.Items.Usables.Scp330.CandyKindID.Pink);
