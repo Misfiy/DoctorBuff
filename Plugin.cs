@@ -10,8 +10,8 @@
         public override string Name => "Scp049Buff";
         public override string Prefix => "DoctorBuff";
         public override string Author => "@misfiy";
-        public override Version Version => new(1, 1, 2);
-        public override Version RequiredExiledVersion => new(8, 2, 1);
+        public override Version Version => new(1, 1, 3);
+        public override Version RequiredExiledVersion => new(8, 3, 0);
 
         private Handler handler;
         public static Plugin Instance;
